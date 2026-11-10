@@ -1,0 +1,249 @@
+# Maquette d'auto-provisioning d'un routeur client (CPE) par un réseau opérateur
+#
+# Prérequis :
+#   - Docker Compose >= 2.23.1 (configs avec "content")
+#   - clé SFTP du CPE : ssh-keygen -t ed25519 -f sftp/cpe_key -N "" && cp sftp/cpe_key.pub sftp/cpe.pub
+#   - dossier ./web avec un Dockerfile (serveur FastAPI, à écrire)
+#   - variable optionnelle DB_PASSWORD (fichier .env), sinon valeur par défaut de maquette
+#
+# Lancement :
+#   docker compose up -d --build              # infrastructure (BDD, Kea, DNS, SFTP, web, routeur de collecte)
+#   docker compose --profile cpe up -d cpe    # routeur client RouterOS (nécessite /dev/kvm)
+#
+# Plan d'adressage :
+#   core   172.30.0.0/24   serveurs  : postgres .5 | kea .10 | sftp .22 | dns .53 | web .80 | collecte .2
+#   access 172.30.10.0/24  accès CPE : collecte .1 (passerelle + relais DHCP) | CPE en DHCP (pool .100-.200)
+
+name: auto-provisioning
+
+# Image Kea construite localement (Kea + client PostgreSQL pour initialiser le schéma)
+x-kea-image: &kea-image
+  image: auto-provisioning/kea:local
+  build:
+    dockerfile_inline: |
+      FROM debian:bookworm-slim
+      RUN apt-get update \
+       && apt-get install -y --no-install-recommends kea-dhcp4-server kea-admin postgresql-client iproute2 \
+       && rm -rf /var/lib/apt/lists/*
+
+networks:
+  core:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.254
+  access:
+    ipam:
+      config:
+        - subnet: 172.30.10.0/24
+          ip_range: 172.30.10.8/29   # adresses attribuées par Docker, hors pool Kea
+          gateway: 172.30.10.254     # libère .1 pour le routeur de collecte
+
+volumes:
+  pgdata:
+  configs_data:   # fichiers .rsc : écrits par le web, lus par le SFTP
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: kea
+      POSTGRES_USER: kea
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kea_pass}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      core:
+        ipv4_address: 172.30.0.5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kea -d kea"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # Initialise le schéma Kea une seule fois (ignoré s'il existe déjà)
+  kea-db-init:
+    <<: *kea-image
+    command:
+      - sh
+      - -c
+      - >
+        kea-admin db-version pgsql -u kea -p ${DB_PASSWORD:-kea_pass} -n kea -h postgres
+        || kea-admin db-init pgsql -u kea -p ${DB_PASSWORD:-kea_pass} -n kea -h postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - core
+    restart: "no"
+
+  kea:
+    <<: *kea-image
+    # Route de retour vers le réseau d'accès via le routeur de collecte (réponses DHCP vers le relais)
+    command:
+      - sh
+      - -c
+      - >
+        mkdir -p /run/kea /var/lib/kea
+        && ip route replace 172.30.10.0/24 via 172.30.0.2
+        && exec kea-dhcp4 -c /etc/kea/kea-dhcp4.conf
+    cap_add:
+      - NET_ADMIN
+    configs:
+      - source: kea_dhcp4
+        target: /etc/kea/kea-dhcp4.conf
+    depends_on:
+      kea-db-init:
+        condition: service_completed_successfully
+    networks:
+      core:
+        ipv4_address: 172.30.0.10
+    restart: unless-stopped
+
+  dns:
+    image: auto-provisioning/dns:local
+    build:
+      dockerfile_inline: |
+        FROM alpine:3.20
+        RUN apk add --no-cache dnsmasq
+    command:
+      - dnsmasq
+      - --keep-in-foreground
+      - --no-resolv
+      - --no-hosts
+      - --log-queries
+      - --log-facility=-
+      - --address=/provisioning.operateur.lab/172.30.0.22
+      - --address=/web.operateur.lab/172.30.0.80
+    networks:
+      core:
+        ipv4_address: 172.30.0.53
+    restart: unless-stopped
+
+  sftp:
+    image: atmoz/sftp:alpine
+    # compte "cpe", authentification par clé uniquement ; dossier "configs" dans le chroot
+    command: cpe::1001:100:configs
+    volumes:
+      - ./sftp/cpe.pub:/home/cpe/.ssh/keys/cpe.pub:ro
+      - configs_data:/home/cpe/configs:ro
+    networks:
+      core:
+        ipv4_address: 172.30.0.22
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    environment:
+      DATABASE_URL: postgresql+psycopg://kea:${DB_PASSWORD:-kea_pass}@postgres:5432/kea
+      CONFIG_DIR: /data/configs
+    volumes:
+      - configs_data:/data/configs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kea-db-init:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    networks:
+      core:
+        ipv4_address: 172.30.0.80
+    restart: unless-stopped
+
+  # Routeur de collecte : passerelle des CPE, relais DHCP vers Kea
+  collecte:
+    image: auto-provisioning/collecte:local
+    build:
+      dockerfile_inline: |
+        FROM debian:bookworm-slim
+        RUN apt-get update \
+         && apt-get install -y --no-install-recommends isc-dhcp-relay iptables iproute2 \
+         && rm -rf /var/lib/apt/lists/*
+    # NAT access -> core pour que les serveurs répondent sans route dédiée (simplification de maquette)
+    command:
+      - sh
+      - -c
+      - >
+        iptables -t nat -A POSTROUTING -s 172.30.10.0/24 -d 172.30.0.0/24 -j MASQUERADE
+        && exec dhcrelay -d -4 172.30.0.10
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      net.ipv4.ip_forward: "1"
+    depends_on:
+      - kea
+    networks:
+      core:
+        ipv4_address: 172.30.0.2
+      access:
+        ipv4_address: 172.30.10.1
+    restart: unless-stopped
+
+  # Routeur client : MikroTik CHR dans un conteneur (QEMU). Profil "cpe" : démarré à la demande.
+  cpe:
+    profiles: ["cpe"]
+    image: evilfreelancer/docker-routeros:latest
+    mac_address: "02:00:00:00:00:01"   # MAC à enregistrer dans l'interface web (à vérifier côté VM)
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    depends_on:
+      - collecte
+    networks:
+      - access
+    restart: unless-stopped
+
+configs:
+  kea_dhcp4:
+    content: |
+      {
+        "Dhcp4": {
+          "interfaces-config": {
+            "interfaces": [ "*" ],
+            "dhcp-socket-type": "udp"
+          },
+          "lease-database": {
+            "type": "memfile",
+            "persist": true,
+            "name": "/var/lib/kea/kea-leases4.csv"
+          },
+          "hosts-database": {
+            "type": "postgresql",
+            "host": "postgres",
+            "name": "kea",
+            "user": "kea",
+            "password": "${DB_PASSWORD:-kea_pass}"
+          },
+          "host-reservation-identifiers": [ "hw-address" ],
+          "valid-lifetime": 3600,
+          "subnet4": [
+            {
+              "id": 1,
+              "subnet": "172.30.10.0/24",
+              "relay": { "ip-addresses": [ "172.30.10.1" ] },
+              "pools": [
+                {
+                  "pool": "172.30.10.100 - 172.30.10.200",
+                  "client-class": "KNOWN"
+                }
+              ],
+              "option-data": [
+                { "name": "routers", "data": "172.30.10.1" },
+                { "name": "domain-name-servers", "data": "172.30.0.53" },
+                { "name": "domain-name", "data": "operateur.lab" }
+              ]
+            }
+          ],
+          "loggers": [
+            {
+              "name": "kea-dhcp4",
+              "severity": "INFO",
+              "output_options": [ { "output": "stdout" } ]
+            }
+          ]
+        }
+      }

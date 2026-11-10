@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-11-02" view-index="0" gantt-divider-location="339" resource-divider-location="300" version="3.3.3312" locale="fr_FR">
+    <description/>
+    <view zooming-state="default:5" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="184" order="0"/>
+        <field id="tpd4" name="Date de début" width="69" order="1"/>
+        <field id="tpd5" name="Date de fin" width="70" order="2"/>
+        <field id="tpd15" name="Notes" width="20" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nom" width="210" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" uid="235995670d71475b80f3cedc58e7f6b8" name="Etude du projet" meeting="false" start="2026-10-09" duration="6" complete="0" expand="true">
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="1" uid="eb6510803bfb4c879a522e4551a1e5b0" name="Préparation de l'environnement de secours" meeting="false" start="2026-10-09" duration="1" complete="0" expand="true">
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="2" uid="283ee35a359942d5874feb5cadb2fa61" name="période entreprise + travail sur SAE52" meeting="false" start="2026-10-19" duration="15" complete="0" expand="true">
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <depend id="4" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="3" uid="b48afc52ef1b4fff804d410e2d4aebf7" name="Mise en place du serveur DHCP" meeting="false" start="2026-11-09" duration="4" complete="0" expand="true">
+            <depend id="5" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="4" uid="7ff98ba6f2cb4976bb895607be843575" name="Mise en place de la BDD" meeting="false" start="2026-11-09" duration="4" complete="0" expand="true">
+            <depend id="5" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="5" uid="33f2f8f67dd1469f88511f1a203851bf" name="Mise en place du serveur DNS" meeting="false" start="2026-11-13" duration="1" complete="0" expand="true">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="6" uid="838281c8b27d417abb8bd879ce4696ba" name="Mise en place du serveur SFTP" meeting="false" start="2026-11-16" duration="2" complete="0" expand="true">
+            <depend id="7" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="7" uid="7a38a66af7434ddc9b7961b9574f2adc" name="Mise en place du routeur FAI de collecte" meeting="false" start="2026-11-18" duration="2" complete="0" expand="true">
+            <depend id="8" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="8" uid="bcbbce9550f14ffb8b7f8dc525c49523" name="Configuration du routeur client" meeting="false" start="2026-11-20" duration="6" complete="0" expand="true">
+            <depend id="9" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="9" uid="ffbdfe6dac8c4c5b8485bf71c5999f6a" name="Rédaction de la conception" meeting="false" start="2026-11-30" duration="7" complete="0" expand="true">
+            <depend id="10" type="2" difference="0" hardness="Strong"/>
+            <depend id="11" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="10" uid="909f68f831e4481bb4cde1a5387dbace" name="Rédaction de la doc technique" meeting="false" start="2026-12-09" duration="6" complete="0" expand="true">
+            <depend id="12" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="11" uid="3c162f2492f545d2875a249148785cab" name="Rédaction de la doc utilisateur" meeting="false" start="2026-12-09" duration="6" complete="0" expand="true">
+            <depend id="12" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="12" uid="101fb9d1365142ffaf25442f165945e6" name="Mise en forme du document" meeting="false" start="2026-12-17" duration="1" complete="0" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>

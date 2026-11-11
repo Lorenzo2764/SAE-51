@@ -1,0 +1,15 @@
+// /etc/bind/named.conf.options
+// Serveur DNS faisant autorité uniquement pour la zone operateur.lab (pas de récursion).
+
+options {
+    directory "/var/cache/bind";
+
+    // Écoute : boucle locale + IP de la VM DNS (à adapter)
+    listen-on    { 127.0.0.1; 200.0.0.2; };
+    listen-on-v6 { none; };
+
+    // Serveur autoritaire seulement : ne résout pas les noms d'Internet
+    recursion no;
+    allow-query { any; };       // les CPE (réseau d'accès) doivent pouvoir interroger
+    allow-transfer { none; };   // pas de transfert de zone
+};

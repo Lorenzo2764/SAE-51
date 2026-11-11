@@ -1,0 +1,18 @@
+; /etc/bind/zones/db.operateur.lab
+; Zone directe operateur.lab
+
+$TTL 3600
+@	IN	SOA	ns1.operateur.lab.	admin.operateur.lab. (
+		2026111101	; serial (AAAAMMJJNN)
+		3600		; refresh
+		900		; retry
+		604800		; expire
+		300 )		; TTL négatif
+
+        IN  NS  ns1.operateur.lab.
+@	IN	A	200.0.0.2
+ns1     IN	A	200.0.0.2
+kea     IN	A	200.0.0.1
+bdd     IN	A	200.0.0.3
+sftp    IN	A	200.0.0.4
+web     IN	A	200.0.0.5

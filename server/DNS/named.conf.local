@@ -1,0 +1,13 @@
+// /etc/bind/named.conf.local
+// Zones gérées par ce serveur.
+
+zone "operateur.lab" {
+    type primary;
+    file "/etc/bind/db.operateur.lab";
+};
+
+// Zone inverse du réseau 200.0.0.0/24
+zone "0.0.200.in-addr.arpa" {
+    type primary;
+    file "/etc/bind/db.200.0.0";
+};

@@ -1,0 +1,18 @@
+; /etc/bind/zones/db.200.0.0
+; Zone inverse du réseau 200.0.0.0/24
+
+$TTL 3600
+@       IN  SOA ns1.operateur.lab. admin.operateur.lab. (
+                2026111101  ; serial (AAAAMMJJNN)
+                3600        ; refresh
+                900         ; retry
+                604800      ; expire
+                300 )       ; TTL négatif
+
+        IN  NS  ns1.operateur.lab.
+
+1       IN  PTR kea.operateur.lab.
+2       IN  PTR ns1.operateur.lab.
+3       IN  PTR bdd.operateur.lab.
+4       IN  PTR sftp.operateur.lab.
+5       IN  PTR web.operateur.lab.

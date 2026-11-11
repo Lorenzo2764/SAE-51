@@ -15,3 +15,7 @@ EN FAIT NON
 On part sur des VM avec plus ou moins la même architecture
 Question pour le prof (Comment sont retrouvés les fichiers de conf ? La déduction par la MAC est-elle bonne ? Risque de sécu ?)
 MDP des rôles contenus en var d'env ?
+
+11/11/2026
+La BDD est presque prête, tous les fichiers de conf et dump SQL sont déposés. Il manque cependant les triggers à faire avec Kea pour l'autorisation DHCP
+DNS prêt bien qu'il pourrait être poussé si on a le temps (Faire un 2e DNS qui en sera un de récursion pour permettre en théorie d'aller résoudre des noms d'autres domaines)

@@ -6,8 +6,8 @@ zone "operateur.lab" {
     file "/etc/bind/db.operateur.lab";
 };
 
-// Zone inverse du réseau 200.0.0.0/24
-zone "0.0.200.in-addr.arpa" {
+// Zone inverse du réseau 192.168.0.0/24
+zone "0.168.192.in-addr.arpa" {
     type primary;
-    file "/etc/bind/db.200.0.0";
+    file "/etc/bind/db.192.168.0";
 };

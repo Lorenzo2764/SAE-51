@@ -1,5 +1,5 @@
-; /etc/bind/zones/db.200.0.0
-; Zone inverse du réseau 200.0.0.0/24
+; /etc/bind/zones/db.192.168.0
+; Zone inverse du réseau 192.168.0.0/24
 
 $TTL 3600
 @       IN  SOA ns1.operateur.lab. admin.operateur.lab. (

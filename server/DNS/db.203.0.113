@@ -11,8 +11,5 @@ $TTL 3600
 
         IN  NS  ns1.operateur.lab.
 
-1       IN  PTR kea.operateur.lab.
-2       IN  PTR ns1.operateur.lab.
-3       IN  PTR bdd.operateur.lab.
-4       IN  PTR sftp.operateur.lab.
-5       IN  PTR web.operateur.lab.
+1       IN  PTR ns1.operateur.lab.
+1       IN  PTR sftp.operateur.lab.

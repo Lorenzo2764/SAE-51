@@ -23,6 +23,7 @@ DNS prêt bien qu'il pourrait être poussé si on a le temps (Faire un 2e DNS qu
 18/11/2026 - 20/11/2026
 Le DNS a été modifié pour qu'il sert au public et non au réseau interne.
 Le routeur FAI a été créé avec 3 interfaces: une pour le réseau privé contenant les serveurs, une contenant l'IP publique sur laquelle le routeur client sera rattaché et une d'administration (réseau privé hôte).
+Deux particularités sur le routeur: le DHCP-relay et la redirection de port pour le DNS et SFTP.
 Conf du DHCP fonctionnelle bien que limitée au lab (un seul pool utilisant des adresses IP de documentation)
 Tables de Kea importées sur la BDD et trigger de la BDD fait.
 DHCP ET BDD FONCTIONNELS AVEC OU SANS IP FIXE, AUTH PAR MAC FONCTIONNELLE ÉGALEMENT (Si la mac n'est pas renseigné, on a pas d'IP).

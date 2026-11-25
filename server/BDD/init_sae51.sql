@@ -2,12 +2,9 @@
 -- Initialisation de la base SAE-51 (auto-provisioning des routeurs clients)
 --
 -- Crée : les rôles "kea" et "web", la base "SAE-51", les tables "clients" et
--- "provisionning", et un jeu de clients fictifs.
+-- "provisioning", et un jeu de clients fictifs.
 --
--- Le script est rejouable : rôles, base et tables ne sont créés que s'ils
--- n'existent pas, les mots de passe sont mis à jour, les clients fictifs ne
--- sont insérés que si la table est vide.
---
+
 -- Utilisation (sur le serveur PostgreSQL, en superutilisateur) :
 --   sudo -u postgres psql -v kea_pw='MOT_DE_PASSE_KEA' -v web_pw='MOT_DE_PASSE_WEB' -f init_sae51.sql
 -- =============================================================================

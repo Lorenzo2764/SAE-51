@@ -1,0 +1,33 @@
+/* =============================================================================
+   admin.css : interface d'administration (intranet de l'opérateur).
+   Ton sobre et dense : en-tête sombre, accent bleu, badge « Intranet ».
+   ============================================================================= */
+
+:root {
+  --accent: #1d4ed8;
+  --accent-fonce: #1a3fae;
+  --accent-clair: #e6edfc;
+}
+
+.entete { background: #101a30; border-bottom: 0; color: #e8edf7; }
+.entete .marque__logo { background: #3b6df0; }
+.entete .nav a[aria-current="page"] { background: rgba(255, 255, 255, .15); color: #fff; }
+
+.badge-intranet {
+  display: inline-block; margin-left: .35rem; padding: .12rem .55rem; border-radius: 999px;
+  background: #f5b301; color: #2b1d00; font-size: .7rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; vertical-align: middle;
+}
+
+.compteur { color: var(--texte-doux); }
+.compteur strong { color: var(--texte); font-size: 1.15rem; }
+
+/* Formulaire d'enregistrement à gauche, liste à droite sur grand écran */
+.disposition-admin { display: grid; gap: 1.5rem; align-items: start; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) {
+  .disposition-admin { grid-template-columns: 22rem minmax(0, 1fr); }
+  .disposition-admin .carte--collante { position: sticky; top: 1.25rem; }
+}
+
+.formulaire--vertical { display: grid; gap: 1.1rem; }
+.cellule-client { line-height: 1.35; }

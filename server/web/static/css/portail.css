@@ -1,0 +1,58 @@
+/* =============================================================================
+   portail.css : espace client.
+   Ton plus chaleureux : en-tête clair, accent vert-bleu, grandes cartes.
+   ============================================================================= */
+
+:root {
+  --accent: #0f766e;
+  --accent-fonce: #0b5d56;
+  --accent-clair: #dff1ee;
+  --fond: #f1f6f6;
+}
+
+.entete { background: var(--surface); }
+.entete .marque { color: var(--accent-fonce); }
+
+/* ---------- Page de connexion ---------- */
+.page-connexion .contenu { display: grid; place-items: center; padding-block: 3rem; }
+.page-connexion .conteneur { display: grid; place-items: center; }
+.carte-connexion { width: min(26rem, 100%); padding: 2rem; }
+.carte-connexion h1 { font-size: 1.6rem; }
+.carte-connexion .intro { margin-bottom: 1.5rem; color: var(--texte-doux); }
+.carte-connexion .note { margin: 1.25rem 0 0; color: var(--texte-doux); font-size: .85rem; text-align: center; }
+
+/* ---------- Tableau de bord ---------- */
+.cartes-routeurs { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(18.5rem, 1fr)); }
+.carte-routeur { display: flex; flex-direction: column; gap: 1rem; }
+.carte-routeur__tete { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
+.carte-routeur__tete h2 { margin: 0; }
+.carte-routeur dl { display: grid; grid-template-columns: auto 1fr; gap: .45rem 1rem; margin: 0; }
+.carte-routeur dt { color: var(--texte-doux); font-size: .9rem; }
+.carte-routeur dd { margin: 0; text-align: right; }
+.carte-routeur .btn { margin-top: auto; }
+
+/* ---------- Page de configuration ---------- */
+.disposition-config { display: grid; gap: 1.5rem; align-items: start; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 960px) {
+  .disposition-config { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
+  .disposition-config .apercu { position: sticky; top: 1.25rem; }
+}
+
+.colonne-formulaires { display: grid; gap: 1.5rem; min-width: 0; }
+.redirections { display: grid; gap: .75rem; }
+.redirection {
+  display: grid; gap: .6rem; padding: .85rem; border: 1px dashed #b9c4d2; border-radius: 8px;
+  grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 2.2fr) minmax(0, 1fr) auto;
+}
+.redirection--erreur { border-color: #b42318; }
+.redirection__erreur { grid-column: 1 / -1; }
+.redirection .champ label { font-size: .8rem; }
+@media (max-width: 760px) { .redirection { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+.apercu pre {
+  max-height: 30rem; margin: 0 0 1rem; padding: 1rem; overflow: auto;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  border-radius: 8px; background: #0f1a24; color: #d6e4f2;
+  font: .84rem/1.6 var(--mono); tab-size: 2;
+}
+.apercu__vide { padding: 2rem 1rem; border: 1px dashed #b9c4d2; border-radius: 8px; color: var(--texte-doux); text-align: center; }

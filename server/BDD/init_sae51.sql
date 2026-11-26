@@ -86,23 +86,23 @@ GRANT CREATE ON SCHEMA public TO kea;
 -- 5. Clients fictifs (numéros dans les plages réservées à la fiction par l'ARCEP)
 -- ---------------------------------------------------------------------------
 INSERT INTO clients (nom, prenom, email, mot_de_passe, telephone) VALUES
-    ('Martin',    'Léa',       'lea.martin@example.com',      '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', '0639980101'), -- secret
-    ('Bernard',   'Lucas',     'lucas.bernard@example.com',   '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0639980102'), -- password
-    ('Dubois',    'Camille',   'camille.dubois@example.com',  '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK8.', '0639980103'), -- azerty123
-    ('Thomas',    'Hugo',      'hugo.thomas@example.com',     '$2b$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', '0639980104'), -- admin123
-    ('Robert',    'Chloé',     'chloe.robert@example.com',    '$2b$12$KIX9p9x8Z9x8Z9x8Z9x8Z.u8Z9x8Z9x8Z9x8Z9x8Z9x8Z9x8Z9x8W', '0639980105'), -- bienvenue
-    ('Richard',   'Nathan',    'nathan.richard@example.com',  '$2b$10$eImiTXuWVxfM37uY4JANjQ==.1234567890123456789012345678901', '0639980106'), -- 123456
-    ('Petit',     'Manon',     'manon.petit@example.com',     '$2b$10$7EqJtq98hPqEX7fNZaFWoO5.1234567890123456789012345678902', '0639980107'), -- soleil2026
-    ('Durand',    'Louis',     'louis.durand@example.com',    '$2b$10$8K1p/a0dL1LXMIgoEDFrwO.1234567890123456789012345678903', '0639980108'), -- louis123
-    ('Leroy',     'Emma',      'emma.leroy@example.com',      '$2b$10$3euPcmQFCiblsZeEu5s7p.9.1234567890123456789012345678904', '0639980109'), -- emma2026
-    ('Moreau',    'Jules',     'jules.moreau@example.com',    '$2b$10$4s3d2f1g0h9j8k7l6m5n4.1234567890123456789012345678905', '0639980110'), -- motdepasse
-    ('Simon',     'Inès',      'ines.simon@example.com',      '$2b$10$5a4s3d2f1g0h9j8k7l6m5.1234567890123456789012345678906', '0199000111'), -- test1234
-    ('Laurent',   'Arthur',    'arthur.laurent@example.com',  '$2b$10$6q5w4e3r2t1y0u9i8o7p6.1234567890123456789012345678907', '0199000112'), -- arthur01
-    ('Lefebvre',  'Zoé',       'zoe.lefebvre@example.com',    '$2b$10$7z6x5c4v3b2n1m0a9s8d7.1234567890123456789012345678908', '0261910113'), -- zoe12345
-    ('Michel',    'Théo',      'theo.michel@example.com',     '$2b$10$8p7o6i5u4y3t2r1e0w9q8.1234567890123456789012345678909', '0261910114'), -- theo2026
-    ('Garcia',    'Sarah',     'sarah.garcia@example.com',    '$2b$10$9l8k7j6h5g4f3d2s1a0p9.1234567890123456789012345678910', '0639980115'), -- sarah123
-    ('David',     'Maxime',    'maxime.david@example.com',    '$2b$10$0m9n8b7v6c5x4z3l2k1j0.1234567890123456789012345678911', '0639980116'), -- maxime01
-    ('Bertrand',  'Clara',     'clara.bertrand@example.com',  '$2b$10$1q2w3e4r5t6y7u8i9o0p1.1234567890123456789012345678912', '0639980117'), -- clara123
-    ('Roux',      'Antoine',   'antoine.roux@example.com',    '$2b$10$2a3s4d5f6g7h8j9k0l1z2.1234567890123456789012345678913', '0639980118'), -- antoine1
-    ('Vincent',   'Julie',     'julie.vincent@example.com',   '$2b$10$3z4x5c6v7b8n9m0q1w2e3.1234567890123456789012345678914', '0639980119'), -- julie123
-    ('Fournier',  'Romain',    'romain.fournier@example.com', '$2b$10$4r5t6y7u8i9o0p1a2s3d4.1234567890123456789012345678915', '0639980120'); -- romain01
+    ('Martin',    'Léa',       'lea.martin@example.com',      '$2b$12$Yd0PIxNETzdIOJVoia30P.G9hysvolX3jXqe090ncLDNE46Ki7lD2', '0639980101'), -- secret
+    ('Bernard',   'Lucas',     'lucas.bernard@example.com',   '$2b$12$V2.TCBf.xKT0IWond7XgluXwxifROqJH8Kn6LoAzw1etFue6V8fSq', '0639980102'), -- password
+    ('Dubois',    'Camille',   'camille.dubois@example.com',  '$2b$12$SOnYhckjK8ehRp9rPt1bNeV8VJ5VIX0p2NsZoolyHtcX3COrCpD2W', '0639980103'), -- azerty123
+    ('Thomas',    'Hugo',      'hugo.thomas@example.com',     '$2b$12$Iq9vYYLstHrYGu8moatEkuJir0JaUxLqme3guQH.nFtLxsBr3Y0da', '0639980104'), -- admin123
+    ('Robert',    'Chloé',     'chloe.robert@example.com',    '$2b$12$JUCKHJFuOLgmYcA6v5cR6et4.f9JjDhCiU1YSpBRJtWFkY9OF9a6y', '0639980105'), -- bienvenue
+    ('Richard',   'Nathan',    'nathan.richard@example.com',  '$2b$12$UIg.a.GuCkzHaJWNg82hyeJ/Xs.I1JAwdmEjFvBsml8kUysSyzroq', '0639980106'), -- 123456
+    ('Petit',     'Manon',     'manon.petit@example.com',     '$2b$12$hcctOYEaZB5jk0bljNwp5eqcm9ZyLFTCiTdAbh.XFhFm4WCe8gsni', '0639980107'), -- soleil2026
+    ('Durand',    'Louis',     'louis.durand@example.com',    '$2b$12$Tqk0KysdOOjpwa0L5TPRU.2n1rgfxsHG7xJV.yOBIeyu9S3/CI5I6', '0639980108'), -- louis123
+    ('Leroy',     'Emma',      'emma.leroy@example.com',      '$2b$12$smKCzWYvzlMM9fYG9HcYbeEEOCW5IW7sEZbZCFQ65B7YBzUpChpb.', '0639980109'), -- emma2026
+    ('Moreau',    'Jules',     'jules.moreau@example.com',    '$2b$12$SJxfxIEtZ.w739fS/q7LxOS6YEaKGRvPEmRSUA2/Z6/5NKxX.DwU2', '0639980110'), -- motdepasse
+    ('Simon',     'Inès',      'ines.simon@example.com',      '$2b$12$gzL3ogMukogO07AB1cUgyu4jHkzBH/zpf080R3QCONAStjU8sSfuy', '0199000111'), -- test1234
+    ('Laurent',   'Arthur',    'arthur.laurent@example.com',  '$2b$12$t4/aJO.hZYybZzrsR5KHfefJByiQH0Nx.gGx4Q.//SBYMiY3wj7Si', '0199000112'), -- arthur01
+    ('Lefebvre',  'Zoé',       'zoe.lefebvre@example.com',    '$2b$12$P220JMgtrfuZzT8RsPe9YOkDCpGN2DDEVXV1QxXd6gcN9zudtT7aW', '0261910113'), -- zoe12345
+    ('Michel',    'Théo',      'theo.michel@example.com',     '$2b$12$bFrJkBLHTo8mrNpj7YcN9ew3i5Ob6192mB7JWsxnmGoh.54eP4V82', '0261910114'), -- theo2026
+    ('Garcia',    'Sarah',     'sarah.garcia@example.com',    '$2b$12$mpL/m6glf0LBM28bMZQPUu8sTphjtIYkfWwYFNnUww8KxUVwFTgUu', '0639980115'), -- sarah123
+    ('David',     'Maxime',    'maxime.david@example.com',    '$2b$12$BGGr5Ak5CYnfrQ4XJnfP9eLXlDv3xquvUs1iesaaYb441qAtifuRK', '0639980116'), -- maxime01
+    ('Bertrand',  'Clara',     'clara.bertrand@example.com',  '$2b$12$dneG1KYT1pA65A9oW1HAz.XPVG3GQk796HWTRDnOJe/fSe5aP.sD.', '0639980117'), -- clara123
+    ('Roux',      'Antoine',   'antoine.roux@example.com',    '$2b$12$j2JLhMOq.uFrfChnWwTTeOJh5E19DaA1gMGl15IGfaSesUouMjLPy', '0639980118'), -- antoine1
+    ('Vincent',   'Julie',     'julie.vincent@example.com',   '$2b$12$xzgMmQETsK0kgh2YabhKeusmxCNCSXHbxolgJBGa12Q4TVdQIBAbe', '0639980119'), -- julie123
+    ('Fournier',  'Romain',    'romain.fournier@example.com', '$2b$12$eWN5/.a9M.W2RBYs73xiB.eBwc1vQG7BflrQbsWTvNpoVc9PXoa.a', '0639980120'); -- romain01

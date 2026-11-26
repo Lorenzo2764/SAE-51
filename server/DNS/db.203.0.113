@@ -13,3 +13,4 @@ $TTL 3600
 
 1       IN  PTR ns1.operateur.lab.
 1       IN  PTR sftp.operateur.lab.
+1	IN  PTR portail.operateur.lab.

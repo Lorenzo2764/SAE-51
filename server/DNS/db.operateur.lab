@@ -12,3 +12,4 @@ $TTL 3600
         IN  NS  ns1.operateur.lab.
 ns1	IN	A	203.0.113.1
 sftp	IN	A	203.0.113.1
+portail	IN	A	203.0.113.1

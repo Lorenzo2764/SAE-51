@@ -1,0 +1,93 @@
+{#- Macros communes à l'administration et au portail.
+    Importer avec :  {% import '_macros.html' as m %}
+    Les macros ne voient pas le contexte : les valeurs sont passées en arguments. -#}
+
+{#- Motifs HTML (attribut pattern) : sans antislash pour rester lisibles ; pas de tiret dans une classe [...]
+    (invalide avec le mode « v » des navigateurs récents) -#}
+{% set motif_mac  = '([0-9A-Fa-f]{2}(:|-)){5}[0-9A-Fa-f]{2}' %}
+{% set motif_ipv4 = '((25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])[.]){3}(25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])' %}
+{% set motif_cidr = '((25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])[.]){3}(25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])/(3[0-2]|[12]?[0-9])' %}
+
+
+{#- Jeton CSRF : à inclure dans chaque formulaire POST -#}
+{% macro csrf(jeton) -%}
+<input type="hidden" name="csrf_token" value="{{ jeton }}">
+{%- endmacro %}
+
+
+{#- Messages d'information : liste de {categorie: 'info'|'succes'|'erreur', texte: '...'} -#}
+{% macro messages(liste) -%}
+{% if liste %}
+<div class="messages">
+  {% for message in liste %}
+  <div class="alerte alerte--{{ message.categorie|default('info') }}"{% if message.categorie == 'erreur' %} role="alert"{% endif %}>{{ message.texte }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{%- endmacro %}
+
+
+{#- Champ de saisie avec libellé, aide et message d'erreur.
+    erreurs : dictionnaire {nom_du_champ: 'message'} (ou rien).
+    Un champ de type password n'est jamais pré-rempli. -#}
+{% macro champ(nom, libelle, valeur='', type='text', aide=None, erreurs=None, requis=False,
+               motif=None, autocomplete=None, placeholder=None, mono=False,
+               minlength=None, maxlength=None, inputmode=None) -%}
+{% set erreur = erreurs.get(nom) if erreurs else None %}
+<div class="champ{% if erreur %} champ--erreur{% endif %}">
+  <label for="{{ nom }}">{{ libelle }}{% if requis %} <span class="requis" aria-hidden="true">*</span>{% endif %}</label>
+  <input id="{{ nom }}" name="{{ nom }}" type="{{ type }}"
+    {%- if type != 'password' %} value="{{ valeur if valeur is not none else '' }}"{% endif %}
+    {%- if requis %} required{% endif %}
+    {%- if motif %} pattern="{{ motif }}"{% endif %}
+    {%- if autocomplete %} autocomplete="{{ autocomplete }}"{% endif %}
+    {%- if placeholder %} placeholder="{{ placeholder }}"{% endif %}
+    {%- if minlength %} minlength="{{ minlength }}"{% endif %}
+    {%- if maxlength %} maxlength="{{ maxlength }}"{% endif %}
+    {%- if inputmode %} inputmode="{{ inputmode }}"{% endif %}
+    {%- if mono %} class="mono"{% endif %}
+    {%- if erreur %} aria-invalid="true"{% endif %}
+    {%- if aide or erreur %} aria-describedby="{% if aide %}{{ nom }}-aide{% endif %}{% if aide and erreur %} {% endif %}{% if erreur %}{{ nom }}-erreur{% endif %}"{% endif %}>
+  {% if aide %}<span class="champ__aide" id="{{ nom }}-aide">{{ aide }}</span>{% endif %}
+  {% if erreur %}<span class="champ__erreur" id="{{ nom }}-erreur">{{ erreur }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+
+{#- Case à cocher avec libellé et aide -#}
+{% macro case(nom, libelle, coche=False, aide=None) -%}
+<div class="case">
+  <input id="{{ nom }}" name="{{ nom }}" type="checkbox" value="1"{% if coche %} checked{% endif %}{% if aide %} aria-describedby="{{ nom }}-aide"{% endif %}>
+  <label for="{{ nom }}">{{ libelle }}{% if aide %}<span class="champ__aide" id="{{ nom }}-aide">{{ aide }}</span>{% endif %}</label>
+</div>
+{%- endmacro %}
+
+
+{#- Liste déroulante des clients : clients = liste de {id, nom, prenom, email} -#}
+{% macro choix_client(nom, libelle, clients, choisi=None, erreurs=None, requis=True, aide=None) -%}
+{% set erreur = erreurs.get(nom) if erreurs else None %}
+<div class="champ{% if erreur %} champ--erreur{% endif %}">
+  <label for="{{ nom }}">{{ libelle }}{% if requis %} <span class="requis" aria-hidden="true">*</span>{% endif %}</label>
+  <select id="{{ nom }}" name="{{ nom }}"{% if requis %} required{% endif %}{% if erreur %} aria-invalid="true" aria-describedby="{{ nom }}-erreur"{% endif %}>
+    <option value="">Choisir un client…</option>
+    {% for c in clients %}
+    <option value="{{ c.id }}"{% if choisi is not none and choisi|string == c.id|string %} selected{% endif %}>{{ c.nom|upper }} {{ c.prenom }} · {{ c.email }}</option>
+    {% endfor %}
+  </select>
+  {% if aide %}<span class="champ__aide">{{ aide }}</span>{% endif %}
+  {% if erreur %}<span class="champ__erreur" id="{{ nom }}-erreur">{{ erreur }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+
+{#- Bouton de suppression avec confirmation, sans JavaScript (élément <details>) -#}
+{% macro suppression(action, jeton, libelle='Supprimer', question='Confirmer ?') -%}
+<details class="confirmer">
+  <summary class="btn btn--secondaire btn--petit">{{ libelle }}</summary>
+  <form method="post" action="{{ action }}" class="confirmer__corps">
+    {{ csrf(jeton) }}
+    <span class="confirmer__question">{{ question }}</span>
+    <button type="submit" class="btn btn--danger btn--petit">Oui, supprimer</button>
+  </form>
+</details>
+{%- endmacro %}

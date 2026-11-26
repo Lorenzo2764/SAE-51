@@ -1,4 +1,4 @@
-; /etc/bind/zones/db.operateur.lab
+; /etc/bind/db.operateur.lab
 ; Zone directe operateur.lab
 
 $TTL 3600
@@ -8,8 +8,8 @@ $TTL 3600
 		900		; retry
 		604800		; expire
 		300 )		; TTL négatif
-
-        IN  NS  ns1.operateur.lab.
+;
+@	IN	NS	ns1.operateur.lab.
 ns1	IN	A	203.0.113.1
 sftp	IN	A	203.0.113.1
 portail	IN	A	203.0.113.1

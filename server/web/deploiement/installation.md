@@ -1,0 +1,20 @@
+# Installation sur la VM BDD + web (192.168.0.3)
+
+```bash
+sudo apt install python3-venv apache2 openssl
+sudo useradd --system --home /opt/provisioning-web provisioning
+sudo mkdir -p /opt/provisioning-web /srv/provisioning/configs
+sudo cp -r . /opt/provisioning-web && cd /opt/provisioning-web
+sudo python3 -m venv venv && sudo venv/bin/pip install -r requirements.txt
+# dossier partagé : écrit par "provisioning", lu par l'utilisateur SFTP (groupe sftpusers par exemple)
+sudo chown provisioning:sftpusers /srv/provisioning/configs && sudo chmod 2755 /srv/provisioning/configs
+# certificat auto-signé (lab)
+sudo openssl req -x509 -newkey rsa:3072 -nodes -days 365 -subj "/CN=portail.operateur.lab" \
+  -keyout /etc/ssl/private/provisioning.key -out /etc/ssl/certs/provisioning.crt
+sudo cp .env.example /etc/provisioning-web.env      # puis l'éditer
+sudo cp deploy/*.service /etc/systemd/system/ && sudo systemctl daemon-reload
+sudo systemctl enable --now provisioning-portail provisioning-admin
+sudo cp deploy/apache-vhosts.conf /etc/apache2/sites-available/provisioning.conf
+sudo a2enmod ssl proxy proxy_http headers && sudo a2ensite provisioning && sudo systemctl reload apache2
+```
+Le service SFTP doit exposer ce dossier (montage/chroot) sous `configs/`, lisible par le compte `cpe`.

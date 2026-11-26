@@ -1,0 +1,32 @@
+{% extends 'admin/base.html' %}
+{% import '_macros.html' as m %}
+{% block titre %}Modifier un routeur{% endblock %}
+
+{% block contenu %}
+<a class="retour" href="/routeurs">← Retour à la liste des routeurs</a>
+
+<div class="titre-page">
+  <div>
+    <h1>Modifier un routeur</h1>
+    <p class="texte-doux">Routeur <span class="mac">{{ routeur.mac }}</span></p>
+  </div>
+</div>
+
+<section class="carte carte--etroite" aria-labelledby="titre-modif">
+  <h2 class="carte__titre" id="titre-modif">Informations du routeur</h2>
+  <form method="post" action="/routeurs/{{ routeur.id }}/modifier" class="formulaire--vertical">
+    {{ m.csrf(csrf_token) }}
+    {{ m.champ('mac', 'Adresse MAC', valeur=routeur.mac, requis=True, mono=True, motif=m.motif_mac,
+               autocomplete='off', erreurs=erreurs,
+               aide="Modifier la MAC change l'autorisation DHCP : le routeur actuel ne recevra plus de bail.") }}
+    {{ m.champ('ip_fixe', 'IP fixe (option)', valeur=routeur.ip_fixe, motif=m.motif_ipv4, mono=True,
+               autocomplete='off', inputmode='decimal', erreurs=erreurs,
+               aide="Laisser vide pour retirer l'option. Plage réservée : " ~ (plage_ip_fixe|default('203.0.113.10 à 203.0.113.99')) ~ ".") }}
+    {{ m.choix_client('id_client', 'Client', clients, choisi=routeur.id_client, erreurs=erreurs) }}
+    <div class="actions-formulaire">
+      <button type="submit" class="btn btn--primaire">Enregistrer les modifications</button>
+      <a class="btn btn--secondaire" href="/routeurs">Annuler</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

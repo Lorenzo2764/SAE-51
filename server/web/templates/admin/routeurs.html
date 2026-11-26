@@ -1,0 +1,77 @@
+{% extends 'admin/base.html' %}
+{% import '_macros.html' as m %}
+{% block titre %}Routeurs clients{% endblock %}
+
+{% block contenu %}
+<div class="titre-page">
+  <div>
+    <h1>Routeurs clients</h1>
+    <p class="texte-doux">Un routeur enregistré ici est autorisé à obtenir une adresse IP et sa configuration.</p>
+  </div>
+  <p class="compteur"><strong>{{ routeurs|length }}</strong> routeur{{ 's' if routeurs|length > 1 }} enregistré{{ 's' if routeurs|length > 1 }}</p>
+</div>
+
+<div class="disposition-admin">
+
+  <section class="carte carte--collante" aria-labelledby="titre-ajout">
+    <h2 class="carte__titre" id="titre-ajout">Enregistrer un routeur</h2>
+    <form method="post" action="/routeurs" class="formulaire--vertical">
+      {{ m.csrf(csrf_token) }}
+      {{ m.champ('mac', 'Adresse MAC', valeur=formulaire.mac if formulaire else '', requis=True, mono=True,
+                 motif=m.motif_mac, placeholder='08:00:27:AA:BB:CC', autocomplete='off',
+                 aide="MAC de l'interface WAN (ether1) du routeur client.", erreurs=erreurs) }}
+      {{ m.champ('ip_fixe', 'IP fixe (option)', valeur=formulaire.ip_fixe if formulaire else '',
+                 motif=m.motif_ipv4, placeholder='203.0.113.20', mono=True, autocomplete='off', inputmode='decimal',
+                 aide="Laisser vide si le client n'a pas souscrit l'option. Plage réservée : " ~ (plage_ip_fixe|default('203.0.113.10 à 203.0.113.99')) ~ ".",
+                 erreurs=erreurs) }}
+      {{ m.choix_client('id_client', 'Client', clients, choisi=formulaire.id_client if formulaire else None, erreurs=erreurs) }}
+      <div class="actions-formulaire">
+        <button type="submit" class="btn btn--primaire">Enregistrer le routeur</button>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="titre-liste">
+    <h2 class="sr-only" id="titre-liste">Routeurs enregistrés</h2>
+    <div class="tableau-conteneur">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Adresse MAC</th>
+            <th scope="col">Adressage</th>
+            <th scope="col">Client</th>
+            <th scope="col" class="droite">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in routeurs %}
+          <tr>
+            <td><span class="mac">{{ r.mac }}</span></td>
+            <td>
+              {% if r.ip_fixe %}
+              <span class="mac">{{ r.ip_fixe }}</span> <span class="pastille pastille--fixe">IP fixe</span>
+              {% else %}
+              <span class="pastille pastille--dynamique">Dynamique</span>
+              {% endif %}
+            </td>
+            <td class="cellule-client">
+              {{ r.client_prenom }} {{ r.client_nom }}<br>
+              <span class="texte-doux petit">{{ r.client_email }}</span>
+            </td>
+            <td>
+              <div class="actions">
+                <a class="btn btn--secondaire btn--petit" href="/routeurs/{{ r.id }}/modifier">Modifier</a>
+                {{ m.suppression('/routeurs/' ~ r.id ~ '/supprimer', csrf_token, question='Retirer ce routeur ?') }}
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4"><p class="vide">Aucun routeur enregistré pour le moment.</p></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

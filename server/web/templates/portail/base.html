@@ -1,0 +1,33 @@
+{% import '_macros.html' as m %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}Espace client{% endblock %} · Opérateur.lab</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/portail.css') }}">
+</head>
+<body class="{% block classe_corps %}{% endblock %}">
+  <header class="entete">
+    <div class="conteneur entete__interieur">
+      <a class="marque" href="/">
+        <span class="marque__logo" aria-hidden="true"></span>
+        <span class="marque__nom">Opérateur<span>.lab</span></span>
+      </a>
+      {% block nav %}{% endblock %}
+    </div>
+  </header>
+
+  <main class="contenu">
+    <div class="conteneur">
+      {{ m.messages(messages) }}
+      {% block contenu %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="conteneur">Opérateur.lab · Espace client</div>
+  </footer>
+</body>
+</html>

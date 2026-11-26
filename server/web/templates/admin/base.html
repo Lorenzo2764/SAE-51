@@ -1,0 +1,36 @@
+{% import '_macros.html' as m %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}Administration{% endblock %} · Opérateur.lab Intranet</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/admin.css') }}">
+</head>
+<body>
+  <header class="entete">
+    <div class="conteneur entete__interieur">
+      <a class="marque" href="/">
+        <span class="marque__logo" aria-hidden="true"></span>
+        <span class="marque__nom">Opérateur<span>.lab</span><span class="badge-intranet">Intranet</span></span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="/routeurs"{% if page_active == 'routeurs' %} aria-current="page"{% endif %}>Routeurs</a>
+        <a href="/clients"{% if page_active == 'clients' %} aria-current="page"{% endif %}>Clients</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenu">
+    <div class="conteneur">
+      {{ m.messages(messages) }}
+      {% block contenu %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="conteneur">Opérateur.lab · Administration du provisioning · accès réservé à l'intranet</div>
+  </footer>
+</body>
+</html>

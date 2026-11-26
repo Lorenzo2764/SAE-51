@@ -1,0 +1,144 @@
+{% extends 'portail/base.html' %}
+{% import '_macros.html' as m %}
+{% block titre %}Configuration du routeur{% endblock %}
+
+{% block nav %}
+<nav class="nav" aria-label="Navigation principale">
+  <a href="/tableau-de-bord" aria-current="page">Mes routeurs</a>
+  <form method="post" action="/deconnexion">
+    {{ m.csrf(csrf_token) }}
+    <button type="submit">Se déconnecter</button>
+  </form>
+</nav>
+{% endblock %}
+
+{% block contenu %}
+<a class="retour" href="/tableau-de-bord">← Mes routeurs</a>
+
+<div class="titre-page">
+  <div>
+    <h1>Configuration du routeur</h1>
+    <p class="texte-doux">Adresse MAC <span class="mac">{{ routeur.mac }}</span></p>
+  </div>
+</div>
+
+<p class="alerte alerte--info">Cette page génère le fichier de configuration de votre routeur. Elle est prévue pour une première configuration : rien n'est conservé en dehors du fichier généré, et le formulaire repart des valeurs par défaut à chaque visite.</p>
+
+<div class="disposition-config">
+
+  <div class="colonne-formulaires">
+
+  <form method="post" action="/routeurs/{{ routeur.id }}/ip-fixe" class="formulaire">
+    {{ m.csrf(csrf_token) }}
+    <fieldset class="groupe">
+      <legend>Adresse IP publique</legend>
+      {{ m.champ('ip_fixe', 'IP fixe', valeur=routeur.ip_fixe, mono=True, motif=m.motif_ipv4,
+                 placeholder='Dynamique (laisser vide)', autocomplete='off', erreurs=erreurs,
+                 aide='Choisissez une adresse entre ' ~ (plage_ip_fixe.debut if plage_ip_fixe else '203.0.113.10') ~ ' et ' ~ (plage_ip_fixe.fin if plage_ip_fixe else '203.0.113.99') ~ ', ou laissez vide pour une adresse dynamique.') }}
+      <p class="champ__aide sans-marge">Le changement est appliqué au prochain renouvellement du bail DHCP : redémarrez le routeur pour l'obtenir immédiatement.</p>
+      <div class="actions-formulaire">
+        <button type="submit" class="btn btn--secondaire">Enregistrer l'adresse</button>
+      </div>
+    </fieldset>
+  </form>
+
+  <form method="post" action="/routeurs/{{ routeur.id }}/configuration" class="formulaire">
+    {{ m.csrf(csrf_token) }}
+
+    <fieldset class="groupe">
+      <legend>Identité</legend>
+      {{ m.champ('hostname', 'Nom du routeur', valeur=config.hostname, requis=True, motif='[a-z0-9]([a-z0-9]|-){0,30}',
+                 maxlength=31, autocomplete='off', placeholder='maison-lea', erreurs=erreurs,
+                 aide='Lettres minuscules, chiffres et tirets (31 caractères maximum).') }}
+    </fieldset>
+
+    <fieldset class="groupe">
+      <legend>Réseau local</legend>
+      {{ m.champ('lan_cidr', 'Adresse du routeur sur le réseau local', valeur=config.lan_cidr, requis=True, mono=True,
+                 motif=m.motif_cidr, placeholder='192.168.88.1/24', autocomplete='off', erreurs=erreurs,
+                 aide='Adresse IPv4 avec son masque, par exemple 192.168.88.1/24.') }}
+      {{ m.champ('dns', 'Serveurs DNS du réseau local', valeur=config.dns, mono=True, placeholder='1.1.1.1, 9.9.9.9',
+                 autocomplete='off', erreurs=erreurs, aide='Facultatif. Séparer les adresses par une virgule.') }}
+    </fieldset>
+
+    <fieldset class="groupe">
+      <legend>DHCP du réseau local</legend>
+      {{ m.case('dhcp_actif', 'Distribuer des adresses aux appareils du foyer', coche=config.dhcp_actif) }}
+      <div class="grille-champs">
+        {{ m.champ('dhcp_debut', 'Première adresse', valeur=config.dhcp_debut, mono=True, motif=m.motif_ipv4,
+                   placeholder='192.168.88.10', autocomplete='off', erreurs=erreurs) }}
+        {{ m.champ('dhcp_fin', 'Dernière adresse', valeur=config.dhcp_fin, mono=True, motif=m.motif_ipv4,
+                   placeholder='192.168.88.200', autocomplete='off', erreurs=erreurs) }}
+      </div>
+    </fieldset>
+
+    <fieldset class="groupe">
+      <legend>Accès à Internet</legend>
+      {{ m.case('nat_actif', 'Partager la connexion avec le réseau local (NAT)', coche=config.nat_actif,
+                aide="Nécessaire pour que les appareils du foyer accèdent à Internet via l'adresse du routeur.") }}
+    </fieldset>
+
+    <fieldset class="groupe">
+      <legend>Redirections de ports (facultatif)</legend>
+      <p class="champ__aide sans-marge">Rendre un appareil du réseau local joignable depuis Internet. Une ligne vide est ignorée ; cochez « Supprimer » pour retirer une redirection.</p>
+      <div class="redirections">
+        {% for redir in redirections %}
+        {% set i = loop.index0 %}
+        {% set erreur = erreurs.get('redirection_' ~ i) if erreurs else None %}
+        <div class="redirection{% if erreur %} redirection--erreur{% endif %}">
+          <div class="champ">
+            <label for="redir_proto_{{ i }}">Protocole</label>
+            <select id="redir_proto_{{ i }}" name="redir_proto">
+              <option value="tcp"{% if redir.proto != 'udp' %} selected{% endif %}>TCP</option>
+              <option value="udp"{% if redir.proto == 'udp' %} selected{% endif %}>UDP</option>
+            </select>
+          </div>
+          <div class="champ">
+            <label for="redir_port_ext_{{ i }}">Port externe</label>
+            <input id="redir_port_ext_{{ i }}" name="redir_port_ext" type="text" inputmode="numeric" maxlength="5"
+                   value="{{ redir.port_externe if redir.port_externe is not none else '' }}" placeholder="8080" autocomplete="off">
+          </div>
+          <div class="champ">
+            <label for="redir_ip_{{ i }}">Adresse interne</label>
+            <input id="redir_ip_{{ i }}" name="redir_ip" type="text" class="mono" pattern="{{ m.motif_ipv4 }}"
+                   value="{{ redir.ip_interne if redir.ip_interne is not none else '' }}" placeholder="192.168.88.20" autocomplete="off">
+          </div>
+          <div class="champ">
+            <label for="redir_port_int_{{ i }}">Port interne</label>
+            <input id="redir_port_int_{{ i }}" name="redir_port_int" type="text" inputmode="numeric" maxlength="5"
+                   value="{{ redir.port_interne if redir.port_interne is not none else '' }}" placeholder="80" autocomplete="off">
+          </div>
+          <div class="case ligne-redirection__suppr">
+            <input id="redir_suppr_{{ i }}" name="redir_suppr" type="checkbox" value="{{ i }}">
+            <label for="redir_suppr_{{ i }}">Supprimer</label>
+          </div>
+          {% if erreur %}<span class="champ__erreur redirection__erreur">{{ erreur }}</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="actions-formulaire">
+        <button type="submit" name="action" value="ajouter_ligne" formnovalidate class="btn btn--secondaire btn--petit">+ Ajouter une redirection</button>
+      </div>
+    </fieldset>
+
+    <div class="actions-formulaire">
+      <button type="submit" class="btn btn--primaire">Générer la configuration</button>
+      <a class="btn btn--secondaire" href="/tableau-de-bord">Annuler</a>
+    </div>
+  </form>
+
+  </div>
+
+  <aside class="carte apercu" aria-labelledby="titre-apercu">
+    <h2 class="carte__titre" id="titre-apercu">Configuration générée</h2>
+    {% if config_generee %}
+    <pre><code>{{ config_generee }}</code></pre>
+    <a class="btn btn--secondaire" href="/routeurs/{{ routeur.id }}/configuration.rsc" download>Télécharger le fichier .rsc</a>
+    <p class="champ__aide marge-haut">Le fichier est déposé sur le serveur de provisioning de l'opérateur, où votre routeur le récupère.</p>
+    {% else %}
+    <p class="apercu__vide">La configuration apparaîtra ici après la génération.</p>
+    {% endif %}
+  </aside>
+
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'portail/base.html' %}
+{% import '_macros.html' as m %}
+{% block titre %}Mes routeurs{% endblock %}
+
+{% block nav %}
+<nav class="nav" aria-label="Navigation principale">
+  <a href="/tableau-de-bord" aria-current="page">Mes routeurs</a>
+  <form method="post" action="/deconnexion">
+    {{ m.csrf(csrf_token) }}
+    <button type="submit">Se déconnecter</button>
+  </form>
+</nav>
+{% endblock %}
+
+{% block contenu %}
+<div class="titre-page">
+  <div>
+    <h1>Bonjour {{ client.prenom }}</h1>
+    <p class="texte-doux">Retrouvez les routeurs rattachés à votre abonnement et générez leur configuration.</p>
+  </div>
+</div>
+
+{% if routeurs %}
+<div class="cartes-routeurs">
+  {% for r in routeurs %}
+  <article class="carte carte-routeur">
+    <div class="carte-routeur__tete">
+      <h2>Routeur {{ loop.index }}</h2>
+    </div>
+    <dl>
+      <dt>Adresse MAC</dt>
+      <dd><span class="mac">{{ r.mac }}</span></dd>
+      <dt>Adresse IP</dt>
+      <dd>
+        {% if r.ip_fixe %}<span class="mac">{{ r.ip_fixe }}</span> <span class="pastille pastille--fixe">IP fixe</span>
+        {% else %}<span class="pastille pastille--dynamique">Dynamique</span>{% endif %}
+      </dd>
+    </dl>
+    <a class="btn btn--primaire" href="/routeurs/{{ r.id }}/configuration">Générer la configuration</a>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="carte"><p class="vide">Aucun routeur n'est rattaché à votre compte pour le moment.</p></div>
+{% endif %}
+{% endblock %}

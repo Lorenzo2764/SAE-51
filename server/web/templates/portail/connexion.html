@@ -1,0 +1,24 @@
+{% extends 'portail/base.html' %}
+{% import '_macros.html' as m %}
+{% block titre %}Connexion{% endblock %}
+{% block classe_corps %}page-connexion{% endblock %}
+
+{% block contenu %}
+<section class="carte carte-connexion" aria-labelledby="titre-connexion">
+  <h1 id="titre-connexion">Espace client</h1>
+  <p class="intro">Connectez-vous pour gérer la configuration de vos routeurs.</p>
+
+  {% if erreur %}
+  <div class="alerte alerte--erreur" role="alert">{{ erreur }}</div>
+  {% endif %}
+
+  <form method="post" action="/connexion" class="formulaire">
+    {{ m.csrf(csrf_token) }}
+    {{ m.champ('email', 'Adresse e-mail', valeur=email, type='email', requis=True, autocomplete='username') }}
+    {{ m.champ('mot_de_passe', 'Mot de passe', type='password', requis=True, autocomplete='current-password') }}
+    <button type="submit" class="btn btn--primaire btn--large">Se connecter</button>
+  </form>
+
+  <p class="note">Vos identifiants vous ont été communiqués par votre opérateur.</p>
+</section>
+{% endblock %}

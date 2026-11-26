@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ titre }} · Opérateur.lab</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/' ~ feuille ~ '.css') }}">
+</head>
+<body>
+  <main class="contenu">
+    <div class="conteneur">
+      <section class="carte carte--etroite">
+        <h1>{{ titre }}</h1>
+        <p>{{ message }}</p>
+        <p><a class="btn btn--secondaire" href="/">Retour à l'accueil</a></p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

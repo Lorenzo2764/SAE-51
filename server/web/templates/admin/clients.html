@@ -1,0 +1,70 @@
+{% extends 'admin/base.html' %}
+{% import '_macros.html' as m %}
+{% block titre %}Clients{% endblock %}
+
+{% block contenu %}
+<div class="titre-page">
+  <div>
+    <h1>Clients</h1>
+    <p class="texte-doux">Comptes des abonnés. Chaque routeur est rattaché à un client.</p>
+  </div>
+  <p class="compteur"><strong>{{ clients|length }}</strong> client{{ 's' if clients|length > 1 }}</p>
+</div>
+
+<div class="disposition-admin">
+
+  <section class="carte carte--collante" aria-labelledby="titre-ajout-client">
+    <h2 class="carte__titre" id="titre-ajout-client">Créer un client</h2>
+    <form method="post" action="/clients" class="formulaire--vertical">
+      {{ m.csrf(csrf_token) }}
+      {{ m.champ('prenom', 'Prénom', valeur=formulaire.prenom if formulaire else '', requis=True, autocomplete='off', erreurs=erreurs) }}
+      {{ m.champ('nom', 'Nom', valeur=formulaire.nom if formulaire else '', requis=True, autocomplete='off', erreurs=erreurs) }}
+      {{ m.champ('email', 'Adresse e-mail', valeur=formulaire.email if formulaire else '', type='email', requis=True,
+                 autocomplete='off', erreurs=erreurs, aide="Sert d'identifiant de connexion au portail client.") }}
+      {{ m.champ('telephone', 'Téléphone', valeur=formulaire.telephone if formulaire else '', type='tel',
+                 autocomplete='off', erreurs=erreurs) }}
+      {{ m.champ('mot_de_passe', 'Mot de passe provisoire', type='password', requis=True, minlength=8, maxlength=72,
+                 autocomplete='new-password', erreurs=erreurs,
+                 aide='8 à 72 caractères. Il est haché (bcrypt) avant enregistrement.') }}
+      <div class="actions-formulaire">
+        <button type="submit" class="btn btn--primaire">Créer le client</button>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="titre-liste-clients">
+    <h2 class="sr-only" id="titre-liste-clients">Liste des clients</h2>
+    <div class="tableau-conteneur">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Client</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Téléphone</th>
+            <th scope="col">Routeurs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in clients %}
+          <tr>
+            <td>{{ c.prenom }} <strong>{{ c.nom|upper }}</strong></td>
+            <td>{{ c.email }}</td>
+            <td><span class="mac">{{ c.telephone or '—' }}</span></td>
+            <td>
+              {% if c.nb_routeurs %}
+              <span class="pastille pastille--ok">{{ c.nb_routeurs }}</span>
+              {% else %}
+              <span class="pastille pastille--dynamique">Aucun</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4"><p class="vide">Aucun client enregistré.</p></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@
 ```bash
 sudo apt install python3-venv apache2 openssl
 sudo useradd --system --home /opt/provisioning-web provisioning
+sudo groupadd sftpusers
 sudo mkdir -p /opt/provisioning-web /srv/provisioning/configs
 sudo cp -r . /opt/provisioning-web && cd /opt/provisioning-web
 sudo python3 -m venv venv && sudo venv/bin/pip install -r requirements.txt

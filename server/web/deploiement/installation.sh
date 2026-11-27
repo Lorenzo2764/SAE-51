@@ -10,7 +10,7 @@ sudo chown provisioning:sftpusers /srv/provisioning/configs && sudo chmod 2755 /
 sudo openssl req -x509 -newkey rsa:3072 -nodes -days 365 -subj "/CN=portail.operateur.lab" \
   -keyout /etc/ssl/private/provisioning.key -out /etc/ssl/certs/provisioning.crt
 sudo cp .env /etc/provisioning-web.env      # puis l'éditer
-sudo cp deploy/*.service /etc/systemd/system/ && sudo systemctl daemon-reload
+sudo cp deploiement/*.service /etc/systemd/system/ && sudo systemctl daemon-reload
 sudo systemctl enable --now provisioning-portail provisioning-admin
 sudo cp deploy/apache-vhosts.conf /etc/apache2/sites-available/provisioning.conf
 sudo a2enmod ssl proxy proxy_http headers && sudo a2ensite provisioning && sudo systemctl reload apache2

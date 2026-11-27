@@ -1,6 +1,3 @@
-# Installation sur la VM BDD + web (192.168.0.3)
-
-```bash
 sudo apt install python3-venv apache2 openssl
 sudo useradd --system --home /opt/provisioning-web provisioning
 sudo groupadd sftpusers
@@ -17,5 +14,3 @@ sudo cp deploy/*.service /etc/systemd/system/ && sudo systemctl daemon-reload
 sudo systemctl enable --now provisioning-portail provisioning-admin
 sudo cp deploy/apache-vhosts.conf /etc/apache2/sites-available/provisioning.conf
 sudo a2enmod ssl proxy proxy_http headers && sudo a2ensite provisioning && sudo systemctl reload apache2
-```
-Le service SFTP doit exposer ce dossier (montage/chroot) sous `configs/`, lisible par le compte `cpe`.

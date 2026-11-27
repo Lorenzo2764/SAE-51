@@ -20,7 +20,6 @@ add interface=ether3 list=LAN
 add interface=ether4 list=LAN
 /ip address
 add address=203.0.113.1/24 interface=ether1 network=203.0.113.0
-add address=192.168.56.2/24 interface=ether3 network=192.168.56.0
 add address=192.168.0.254/24 interface=ether2 network=192.168.0.0
 /ip dhcp-client
 add default-route-tables=main interface=ether4 name=client2
